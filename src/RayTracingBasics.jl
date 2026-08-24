@@ -46,7 +46,7 @@ struct DirectionVector{FT<:AbstractFloat} <: FieldVector{3,FT}
     zd::FT
     function DirectionVector(x::FT, y::FT, z::FT) where {FT<:AbstractFloat}
         L = hypot(x, y, z)
-        L < eps(FT) && throw(ArgumentError("DirectionVector: cannot have zero length."))
+        check_positive(L)
         return new{FT}(x / L, y / L, z / L)
     end
 end
@@ -100,11 +100,7 @@ Compute the ray parameter `t` at which a ray intersects an axis-aligned plane.
 function t_at_plane(
     ray_origin::PositionVector{FT}, ray_direction::DirectionVector{FT}, axis::Int, c::FT
 ) where {FT<:AbstractFloat}
-    abs(ray_direction[axis]) < eps(FT) && throw(
-        ArgumentError(
-            "t_at_plane: direction component along axis $axis must be greater than zero.",
-        ),
-    )
+    check_positive(abs(ray_direction[axis]))
     return (c - ray_origin[axis]) / ray_direction[axis]
 end
 
@@ -140,6 +136,15 @@ Convert a `DirectionVector` to homogeneous coordinates by appending a zero weigh
 """
 function to_homogeneous(v::DirectionVector{FT}) where {FT<:AbstractFloat}
     return SVector(v[1], v[2], v[3], zero(FT))
+end
+
+# ----------------------------------------------------------------------------------------------------------
+# HELPER FUNCTION
+# ----------------------------------------------------------------------------------------------------------
+
+function check_positive(val::Real)
+    val <= eps(typeof(val)) && throw(ArgumentError("value must be greater than zero"))
+    return nothing
 end
 
 end # module
