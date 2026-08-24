@@ -5,7 +5,7 @@ using JET
 using LinearAlgebra: norm, cross, dot
 using StaticArrays
 
-include("test_vectors.jl")
+include("vector_tests.jl")
 
 @testset "RayTracingBasics.jl" begin
     @testset "Code quality (Aqua.jl)" begin
