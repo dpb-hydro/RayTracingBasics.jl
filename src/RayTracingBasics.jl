@@ -1,6 +1,6 @@
 # RayTracingBasics.jl
-# Dan Bartley, June 2026
-# Vector types to represent position and direction
+# Dan Bartley, August 2026
+# This package provides the `PositionVector` and `DirectionVector` types for use in my other projects
 
 module RayTracingBasics
 

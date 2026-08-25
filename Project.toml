@@ -1,6 +1,6 @@
 name = "RayTracingBasics"
 uuid = "bc944ae8-3a0b-487a-b8d9-26dcdba97316"
-version = "0.0.1"
+version = "1.0.0"
 authors = ["Daniel Bartley"]
 
 [deps]
