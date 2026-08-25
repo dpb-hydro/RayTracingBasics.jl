@@ -12,15 +12,13 @@ using StaticArrays
 
 """
     PositionVector{FT<:AbstractFloat} <: FieldVector{3,FT}
-    PositionVector(xc::FT, yc::FT, zc::FT) where {FT<:AbstractFloat}
 
 Vector representing position in 3D space.
 
-# Constructor arguments
-- `xc`, `yc`, `zc`: position components [metres]
-
 # Fields
-- Same as constructor arguments
+- `xc::FT`: x-component of position
+- `yc::FT`: y-component of position
+- `zc::FT`: z-component of position
 """
 struct PositionVector{FT<:AbstractFloat} <: FieldVector{3,FT}
     xc::FT
@@ -30,15 +28,15 @@ end
 
 """
     DirectionVector{FT<:AbstractFloat} <: FieldVector{3,FT}
-    DirectionVector(x::FT, y::FT, z::FT) where {FT<:AbstractFloat}
 
 Unit-length vector representing direction in 3D space.
 
-# Constructor arguments
-- `x`, `y`, `z`: direction components [-]
+Inner constructor accepts three coordinates and performs normalisation automatically.
 
 # Fields
-- `xd`, `yd`, `zd`: normalised direction components [-]
+- `xd::FT`: x-component of direction (normalised)
+- `yd::FT`: y-component of direction (normalised)
+- `zd::FT`: z-component of direction (normalised)
 """
 struct DirectionVector{FT<:AbstractFloat} <: FieldVector{3,FT}
     xd::FT
@@ -54,14 +52,11 @@ end
 """
     DirectionVector(alpha::FT, beta::FT) where {FT<:AbstractFloat}
 
-Constructor for `DirectionVector` using spherical coordinates.
+Outer constructor for `DirectionVector` using spherical coordinates.
 
 # Arguments
 - `alpha`: elevation angle [radians]
 - `beta`: azimuth angle [radians]
-
-# Returns
-- `DirectionVector{FT}` constructed from spherical coordinates
 """
 function DirectionVector(alpha::FT, beta::FT) where {FT<:AbstractFloat}
     sin_alpha, cos_alpha = sincos(alpha)
@@ -90,12 +85,13 @@ end
 Compute the ray parameter `t` at which a ray intersects an axis-aligned plane.
 
 # Arguments
-- `ray_origin`, `ray_direction`: ray origin [metres] and direction [-]
+- `ray_origin`: ray origin
+- `ray_direction`: ray direction
 - `axis`: axis normal to the plane (1=x, 2=y, 3=z)
-- `c`: coordinate of the plane along `axis` [metres]
+- `c`: coordinate of the plane along `axis`
 
 # Returns
-- `FT`: ray parameter `t` at the intersection point [metres]
+- `FT`: ray parameter `t` at the intersection point
 """
 function t_at_plane(
     ray_origin::PositionVector{FT}, ray_direction::DirectionVector{FT}, axis::Int, c::FT
@@ -142,6 +138,11 @@ end
 # HELPER FUNCTION
 # ----------------------------------------------------------------------------------------------------------
 
+"""
+    check_positive(val::Real)
+
+Throw an error if `val` less than machine epsilon.
+"""
 function check_positive(val::Real)
     val <= eps(typeof(val)) && throw(ArgumentError("value must be greater than zero"))
     return nothing
